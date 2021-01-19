@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
-
+import Modal from "../Modal";
+import Fade from 'react-reveal/Fade'
 
 const mapStyles = {
     map: {
@@ -115,11 +116,18 @@ export class CurrentLocation extends Component {
     render() {
         const style = Object.assign({}, mapStyles.map);
 
-        const {lat, lng} = this.state.currentLocation
+        const coordinates = this.state.currentLocation
 
         return (
             <div style={{width: '100%', height: '100%'}}>
+                {
+                    this.state.isModalShow && (
+                            <Modal
+                                coordinates={coordinates}
+                                hideModal={this.hideModal}/>
 
+                    )
+                }
                 {this.state.isModalShow && (<div
                     style={{
                         width: '100%',
@@ -130,18 +138,18 @@ export class CurrentLocation extends Component {
                     }}
                 > </div>)}
 
-                {this.state.isModalShow && (<div style={{
-                    top: '29%',
-                    left: '29%',
-                    width: '50%',
-                    height: '50%',
-                    backgroundColor: 'white',
-                    position: 'absolute',
-                    zIndex: 1000500
-                }} onClick={() => this.hideModal()}>
-                    <span style={{textAlign: 'center', width: '100%'}}>{lng} </span><br/>
-                    <span style={{textAlign: 'center', width: '100%'}}>{lat} </span>
-                </div>)}
+                {/*{this.state.isModalShow && (<div style={{*/}
+                {/*    top: '29%',*/}
+                {/*    left: '29%',*/}
+                {/*    width: '50%',*/}
+                {/*    height: '50%',*/}
+                {/*    backgroundColor: 'white',*/}
+                {/*    position: 'absolute',*/}
+                {/*    zIndex: 1000500*/}
+                {/*}} onClick={() => this.hideModal()}>*/}
+                {/*    <span style={{textAlign: 'center', width: '100%'}}>{lng} </span><br/>*/}
+                {/*    <span style={{textAlign: 'center', width: '100%'}}>{lat} </span>*/}
+                {/*</div>)}*/}
 
                 <div style={style} ref="map">
                     Loading map...
