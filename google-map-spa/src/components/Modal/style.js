@@ -4,14 +4,21 @@ export const WrapperModal = styled.div `
 position: absolute;
 top: 29%;
 left: 29%;
-width: 50%;
+width: 40%;
 height: fit-content;
-max-height: 50%;
+padding: 4em 2em;
 text-align: center;
 background: white;
 border-radius: 1em;
 z-index: 1000500;
 
+  .district_address h1 {
+    text-decoration: underline;
+  }
+  .coords_city {
+    overflow-y: scroll;
+    max-height: 200px
+  }
   .closeBtn {
     position: absolute;
     top: 10px;

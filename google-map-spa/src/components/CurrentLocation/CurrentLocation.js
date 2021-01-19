@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import Modal from "../Modal";
-import Fade from 'react-reveal/Fade'
+import { apiWeather, apiDistrict } from "../api-service/api-service";
 
 const mapStyles = {
     map: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%'
+        position: "absolute",
+        width: "100%",
+        height: "100%"
     }
 };
 
@@ -19,6 +19,8 @@ export class CurrentLocation extends Component {
             lng: this.props.initialCenter
         },
         isModalShow: false,
+        currentWeatherData : null,
+        currentDistrict: null
     }
 
     componentDidMount() {
@@ -65,11 +67,8 @@ export class CurrentLocation extends Component {
 
             const { google } = this.props;
             const maps = google.maps;
-
             const mapRef = this.refs.map;
-
             const node = ReactDOM.findDOMNode(mapRef);
-
             let { zoom } = this.props;
             const { lat, lng } = this.state.currentLocation;
             const center = new maps.LatLng(lat, lng);
@@ -82,13 +81,25 @@ export class CurrentLocation extends Component {
                 }
             );
             this.map = new maps.Map(node, mapConfig);
+            this.geocoder = new google.maps.Geocoder();
 
-            this.map.addListener('dblclick', e => {
-                this.setState({isModalShow: true, currentLocation: {
+            this.map.addListener("dblclick", async e => {
+
+                let currentWeatherData = await apiWeather({lat: e.latLng.lat(), lng:e.latLng.lng()})
+                let currentDistrict = await apiDistrict({lat: e.latLng.lat(), lng:e.latLng.lng()})
+
+                const currentLocation = {
                     lat:  e.latLng.lat(),
                     lng:  e.latLng.lng(),
-
-                }})
+                }
+                this.setState({
+                    currentLocation,
+                    currentWeatherData,
+                    currentDistrict
+                })
+                this.setState({
+                    isModalShow: true
+                })
             })
         }
     }
@@ -115,41 +126,24 @@ export class CurrentLocation extends Component {
 
     render() {
         const style = Object.assign({}, mapStyles.map);
-
         const coordinates = this.state.currentLocation
+        const weather = this.state.currentWeatherData
+        const district = this.state.currentDistrict
 
         return (
-            <div style={{width: '100%', height: '100%'}}>
+            <div style={{width: "100%", height: "100%"}}>
                 {
                     this.state.isModalShow && (
                             <Modal
                                 coordinates={coordinates}
-                                hideModal={this.hideModal}/>
+                                weather={weather}
+                                district={district}
+                                hideModal={this.hideModal}
+                                />
 
                     )
                 }
-                {this.state.isModalShow && (<div
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        position: 'absolute',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        zIndex: 1000400
-                    }}
-                > </div>)}
-
-                {/*{this.state.isModalShow && (<div style={{*/}
-                {/*    top: '29%',*/}
-                {/*    left: '29%',*/}
-                {/*    width: '50%',*/}
-                {/*    height: '50%',*/}
-                {/*    backgroundColor: 'white',*/}
-                {/*    position: 'absolute',*/}
-                {/*    zIndex: 1000500*/}
-                {/*}} onClick={() => this.hideModal()}>*/}
-                {/*    <span style={{textAlign: 'center', width: '100%'}}>{lng} </span><br/>*/}
-                {/*    <span style={{textAlign: 'center', width: '100%'}}>{lat} </span>*/}
-                {/*</div>)}*/}
+                {this.state.isModalShow && (<OverLayout/>)}
 
                 <div style={style} ref="map">
                     Loading map...
@@ -172,3 +166,20 @@ CurrentLocation.defaultProps = {
     centerAroundCurrentLocation: false,
     visible: true
 };
+
+
+
+export const OverLayout = () => {
+
+    const styles = {
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1000400
+    }
+        return (
+            <div style={styles}>
+            </div>
+        )
+}

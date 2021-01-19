@@ -1,39 +1,41 @@
-import React from 'react';
-import {CloseCircleOutlined} from '@ant-design/icons'
-import {
- WrapperModal
-} from './style'
+import React from "react";
+import { CloseCircleOutlined } from "@ant-design/icons";
+import moment from "moment";
+import { WrapperModal } from "./style";
 
 
 const Modal = ({...props}) => {
-    const {lat, lng} = props.coordinates
-    console.log(props)
-    return(
-        <WrapperModal>
-            <h1>Modal window</h1>
-            <div className="coords_location">
-                <p>
-                    <span>{lat}</span>
-                </p>
-                <p>
-                    <span>{lng}</span>
-                </p>
-            </div>
-            <div className="coords_city">
-                <p>
-                    <span>City: </span><span>Best</span>
-                </p>
-            </div>
-            <div className="coords_street">
-                <p>
-                    <span>Street: </span><span>Pobeda</span>
-                </p>
-            </div>
+    const {lat, lng} = props.coordinates;
+    const {weather, district} = props;
+    const {features} = district;
+    const {properties} = features[0];
 
-            <div className={'closeBtn'}>
-                <span><CloseCircleOutlined /></span>
-            </div>
-        </WrapperModal>
+    return (
+            <WrapperModal>
+                <div className="district_address">
+                    <h1>Your district is :<span>{properties.label}</span></h1>
+                </div>
+                <div className="coords_location">
+                    <p>
+                        <span><b>Latitude:</b> </span> <span>{lat}</span>
+                    </p>
+                    <p>
+                        <span><b>Longitude:</b> </span><span>{lng}</span>
+                    </p>
+                </div>
+                <div className="coords_city">
+                    {weather.map(item => (
+                        <div style={{margin: "10px"}}>
+                            <span><b>{moment(item.dt_txt).format("dddd,  Do")}:</b></span> wind/speed: <span>{item.wind.speed} m/c </span>
+                            <span> Temp: {item.main.temp} C</span>
+                        </div>
+                    ))}
+                </div>
+                <div className={"closeBtn"}
+                     onClick={props.hideModal}>
+                    <span><CloseCircleOutlined/></span>
+                </div>
+            </WrapperModal>
     )
 }
 
