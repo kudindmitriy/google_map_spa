@@ -7,8 +7,6 @@ const mapStyles = {
     height: "100%"
 };
 
-const API_KEY = "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDj0MDTfzDhcUevW7Vpd7YA_fGn1htSdFM";
-
 export class MapContainer extends Component{
     state = {
         showingInfoWindow: false,
@@ -59,4 +57,4 @@ render() {
     }
 }
 
-export default GoogleApiWrapper({apiKey: API_KEY})(MapContainer)
+export default GoogleApiWrapper({apiKey: process.env.REACT_APP_GOOGLE_API_KEY})(MapContainer)

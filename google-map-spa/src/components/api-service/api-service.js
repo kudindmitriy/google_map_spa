@@ -2,13 +2,14 @@ import axios from "axios";
 
  const apiWeather = async (...cords) => {
     let response = null
-    const API_WEATHER_KEY = "9ce877bc186366791830f6ecfaec6d97";
+
     const {lat , lng} = cords[0]
 
+     console.log(process.env.API_WEATHER_KEY)
     try{
         response  = await axios({
             method: "get",
-            url:`/data/2.5/forecast?lat=${lat}&lon=${lng}&units=metric&appid=${API_WEATHER_KEY}`,
+            url:`/data/2.5/forecast?lat=${lat}&lon=${lng}&units=metric&appid=${process.env.REACT_APP_API_WEATHER_KEY}`,
             baseURL: "http://api.openweathermap.org"
         })
     }catch (e) {
